@@ -6,39 +6,43 @@ import "./index.css";
 /**
  *  Component responsible for the input and display of the Gratitude section of our app */
 export default function Gratitude() {
-
-/**
- * Here we use a "useState" hook to manipulate the gratitude variable that holds the current state of our "gratitude list" in our database, */
+  /**
+   * Here we use a "useState" hook to manipulate the gratitude variable that holds the current state of our "gratitude list" in our database, */
   const [gratitudes, setGratitudes] = useState([]);
 
-/**
+  /**
  * Here we have a second "useState" hook to handle the POST and DELETE methods,
-re-rendering the component only when this state changes */ 
+re-rendering the component only when this state changes */
   const [response, setResponse] = useState();
 
-/** This function will fetch the data from our database */
+  /** This function will fetch the data from our database */
   async function getGratitudes() {
-    const response = await fetch("http://localhost:3000/api/gratitudes");
+    const response = await fetch(
+      `${process.env.REACT_APP_SERVER_URL}/api/gratitudes`
+    );
     const data = await response.json();
     setGratitudes(data.payload);
   }
 
-/**
- * Here we have a hook to fetch and re-render the Gratitude component whenever the "response" state changes */
+  /**
+   * Here we have a hook to fetch and re-render the Gratitude component whenever the "response" state changes */
   useEffect(() => {
     getGratitudes();
   }, [response]);
 
-/**
- * Handles the creation of new items on our Gratitude list, fetches our API data, POST a new item, then updates our "response" state. */
+  /**
+   * Handles the creation of new items on our Gratitude list, fetches our API data, POST a new item, then updates our "response" state. */
   async function handleCreate(gratitudeText) {
-    const response = await fetch(`http://localhost:3000/api/gratitudes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ gratitude: gratitudeText }), //Remember to parse in the server
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_SERVER_URL}/api/gratitudes`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ gratitude: gratitudeText }), //Remember to parse in the server
+      }
+    );
     const dataresponse = await response.json();
     setResponse(dataresponse);
   }
@@ -47,7 +51,7 @@ re-rendering the component only when this state changes */
    * Handles the deletion of items on our Gratitude list, fetches our API data, DELETE an item, then updates our "response" state. */
   async function handleDelete(index) {
     const response = await fetch(
-      `http://localhost:3000/api/gratitudes/${index}`,
+      `${process.env.REACT_APP_SERVER_URL}/api/gratitudes/${index}`,
       {
         method: "DELETE",
       }
@@ -57,7 +61,7 @@ re-rendering the component only when this state changes */
   }
 
   /**
-   * This component (Gratitude) has two child components which we are rendering below, we are also passing information from this file to them via props, the fn "handleCreate", our "gratitude" state and the "handleDelete" fn   */ 
+   * This component (Gratitude) has two child components which we are rendering below, we are also passing information from this file to them via props, the fn "handleCreate", our "gratitude" state and the "handleDelete" fn   */
   return (
     <div className="GratitudeParent">
       <div className="inputBox">
